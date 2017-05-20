@@ -33,6 +33,7 @@ int main(int argc, char **argv)
                     pattern = *(argv+i+1);
                     letterIsMatch = &prefixIsMatch;
                     break;
+                    
                 case SUFFIX:
                     letterIsMatch = &suffixIsMatch;
                     pattern = *(argv+i+1);
