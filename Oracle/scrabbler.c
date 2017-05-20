@@ -33,7 +33,7 @@ int main(int argc, char **argv)
                     pattern = *(argv+i+1);
                     letterIsMatch = &prefixIsMatch;
                     break;
-                    
+
                 case SUFFIX:
                     letterIsMatch = &suffixIsMatch;
                     pattern = *(argv+i+1);
@@ -89,10 +89,6 @@ bool ptnIsMatch(char *tar, char *src)
     int wlimit = strlen(tar);
     int lnlen  = strlen(src);
     if (wlimit < lnlen) return false;
-    /* now copy the pattern from tar(target)
-         this help us to do a substract */
-    char *ptn = calloc(strlen(tar), sizeof(char));
-    strcpy(ptn, tar);
     
     for (int i = 0; i < lnlen; i++)
     {   
