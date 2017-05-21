@@ -36,7 +36,7 @@ int part(char *str, int p, int r)
 {
     char x = str[r];
     int  i = p - 1;
-    for (int j = p; j <= r - 1; j++)
+    for (int j = p; j < r; j++)
     {
         if (str[j] <= x)
         {
