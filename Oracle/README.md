@@ -67,3 +67,26 @@ To find all words with a specific suffix:
         yo
         zero
         zoo
+
+
+# Performance analysis
+Uptill now I have implemented two versions for this problem, one is actually pure C with quicksort while another one is C++11 with a map like structure, in theory the C++ version should outbeat pure C version especially say about the map structure, but the fact is C outbeats the C++ and it is more clean and general than C++. :)
+
+Here's the result from ```C```'s version:
+```sh
+# time ./c_scrabbler abcdefg
+...
+real    0m0.011s
+user    0m0.008s
+sys    0m0.002s
+```
+
+Here's the result from ```C++```'s version
+```sh
+# time ./cpp_scrabbler abcdefg
+...
+real    0m0.029s
+user    0m0.026s
+sys    0m0.002s
+```
+
