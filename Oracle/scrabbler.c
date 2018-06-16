@@ -145,28 +145,14 @@ bool suffixIsMatch(char *tar, char *src)
     int wlim  = strlen(tar);
     int lnlen = strlen(src);
     if (wlim  > lnlen) return false;
-
-    char *rsrc = reverse_str(src);
-    char *rtar = reverse_str(tar);
-
-    if (strstr(rsrc, rtar) != rsrc) return false;
-    return true;
-}
-
-//==============================================================================
-// reverse_str(...) reverse str(string)
-//==============================================================================
-
-char *reverse_str(char *str)
-{
-    char *tmpstr = calloc(strlen(str), sizeof(char));
-    strcpy(tmpstr, str);
-    int i, j, c;
-    for (i=0, j=strlen(str)-1; i<j; i++, j--)
+    
+    int i = wlim - 1;
+    int j = lnlen - 1;
+    while (i >= 0)
     {
-        c = tmpstr[i];
-        tmpstr[i] = tmpstr[j];
-        tmpstr[j] = c;
+        if (tar[i] != src[j]) return false;
+        i--;
+        j--;
     }
-    return tmpstr;
+    return true;
 }

@@ -35,6 +35,5 @@ bool (*letterIsMatch)(char *, char *);
 bool ptnIsMatch(char *, char *);
 bool prefixIsMatch(char *, char *);
 bool suffixIsMatch(char *, char *);
-char *reverse_str(char *);
 
 #endif
