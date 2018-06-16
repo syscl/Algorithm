@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
 
     constexpr int map_sz = 'z' - 'A' + 1;
     int map[map_sz] { 0 };
-    char* word = nullptr;
     function<bool(const string&)> letterIsMatch;
 
     if (argc == 3 && strncmp(argv[1], "--prefix", 8) == 0) {
