@@ -1,0 +1,110 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath, mathrsfs}  % The amsmath package is included for \xrightarrow
+\usepackage{amssymb} % for mathematic symbol 
+\usepackage{amsthm} % for the proof square at the end when we finish the proof
+\usepackage{listings}
+\usepackage[colorlinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{color} % for text color % \color{blue}
+\usepackage{booktabs} % for excel
+\usepackage{array} % for excel
+\usepackage{multirow} % for excel
+\usepackage{float} % solve pictures and sheets not follow by words! This issue is just the same as the fucking macOS/iOS' Pages
+% citation style
+\bibliographystyle{ieeetr}
+
+\titleformat*{\section}{\normalsize\bfseries}  % titile format
+
+\usepackage{graphicx} % insert pics
+
+\hypersetup{allcolors=black} % cite and refer color 
+
+\begin{document}
+	\title{%
+		\textbf{Dynamic Set/Vector Implementation Analysis}} 
+		\author{
+			Author: syscl/Yating Zhou\\ 
+		}
+	\maketitle
+		This paper discussed some potential performance improvement invokes with $realloc$ for dynamic growth set. Suppose the data structure $D$ have a single $append$ (i.e. $emplace\_back$) as the data structure's operations. What we want is to reduce the overall runtime of these operations. $append(x)$ operation will attach an element $x$ at the end of a given dynamic set $D$, and resize will happen if the space of $D$ is not enough. \\\\
+		If there's still empty space of $D$, $append(x)$ will take constant runtime (i.e. $O(1)$). Otherwise, $realloc$ is invoked to allocate enough space for our data structure then append the element to the new construct $D$. We will show the strategy of how $realloc$ new space will greatly affect the overall runtime appending an element. Let the size of $D$ to be $m$, the usual way to resize the $D$ with a growth factor of  $\lambda > 1$; i.e., whenever you'd append an element into $D$ without there being room, it would expand the current capacity to $\lambda$ times of its original size. For example the $gcc$ compiler use a fixed $\lambda = 2$ for the $D$ to resize. If the size of an element $x$ is $\alpha > 0$, $D$ will be resized when there's $\lambda^k$ ($k\geq 0$) elements, suppose we have $n$ resize on $D$, then this will require $\alpha \lambda ^ n$ space,  to enable cache-friendly properties (i.e. reuse old elements without involving deep copy), it is neccessary for the following inequality hold
+		\begin{flalign}
+			\sum\limits_{i=0}^{n-1} \alpha \lambda^{n} =\alpha \sum\limits_{i=0}^{n-1} \lambda \geq \alpha\lambda^{n}
+		\end{flalign}
+		(1) says precisely that if \textbf{all} previous allocated space will result in $D$ that is greater or equal to current new resize space, we can then make the memory managemenet or cache hit more friendly (i.e. less page fault). 
+		The left hand side of (1) is the sum of geometric progression, so that (1) turns out to be 
+		\begin{flalign}
+			\lambda^{n+1} - 2\lambda^{n} + 1 \leq 0
+		\end{flalign}
+		or 
+		\begin{flalign}
+			\lambda^{n}(\lambda - 2) + 1 \leq 0
+		\end{flalign}
+		By (2) or (3), if $\lambda \geq 2$, the left hand size of (3) will become $\lambda^{n}(\lambda-2)+1\geq 1 $, which indicates we can not enable cache-friendly memory management under this case. So now we turns to focus on $1 < \lambda < 2$ of (2). What we care is (2) and (3) holds after several calls of $realloc$, in other words, if there exists an integer $N$ such that for $n\geq N$, (2) holds, then we can enable cache-friendly memory management, so now the problem turns out to be choosing the proper $\lambda$. By (2) and $1<\lambda<2$, we have
+		\begin{flalign}
+			n \geq - \frac{ln(2-\lambda)}{ln(\lambda)}
+		\end{flalign}
+		By (4) let
+		\begin{flalign}
+			f(x) = -\frac{ln(2-x)}{ln(x)}
+		\end{flalign}
+		(4) and (5) give us
+		\begin{flalign}
+			n \geq f(\lambda)
+		\end{flalign}
+		It's clear that if after several $N$, if $n\geq N=f(\lambda)$, then we can easily improve the overall runtime of our data structure, and we don't want the $N$ turns out to be too large obviously. So we have to explore the properties of the function $f(x)$. 
+		\begin{flalign}
+			f^{'}(x) =\frac{ xln(x) + (2-x) ln(2-x)            }{x(2-x)ln^{2}(x)}
+		\end{flalign}
+		Let 
+		\begin{flalign}
+			g(x) = xln(x) + (2 -x ) ln(2 - x)
+		\end{flalign}
+		By (8)
+		\begin{flalign}
+			g^{'}(x) = ln\frac{1}{\frac{2}{x} - 1} + \frac{2}{2-x} 
+		\end{flalign}
+		Since $1 < x < 2$, then $0 < \frac{2}{x} - 1 < 1$, along with (9) gives us 
+		\begin{flalign}
+			g^{'}(x) > 0
+		\end{flalign}
+		(10) indicates that $g(x)$ is increasing in $(1,2)$, so 
+		\begin{flalign}
+			g(x) > g(1) = 0
+		\end{flalign}
+		(7), (8) and (11) give us
+		\begin{flalign}
+			f^{'}(x) > 0
+		\end{flalign}
+	Again, (12) implies that $f(x)$ is an increasing function in interval $(1,2)$, so that we can determine how to choose proper $x$ (or $\lambda$) for our data set. If $x\to 2^{-}$, by (8) 
+	\begin{flalign}
+		\lim\limits_{x\to 2^{-}}f(x) &= \lim\limits_{x\to 2^{-}}-\frac{ln(2-x)}{ln(x)} = +\infty
+	\end{flalign}
+	(14) tells us that if we choose $x$ close to $2$, it will result in our data structure hard to enable the cache-friendly memory management, which is not a good choice. If $x\to 1^{+}$, (8) with L'Hopital's rule give us
+	\begin{flalign}
+		\lim\limits_{x\to 1^{+}}f(x) &=	\lim\limits_{x\to 1^{+}}-\frac{ln(2-x)}{ln(x)}\\
+		&=\lim\limits_{x\to 1^{+}} \frac{x}{2-x}=1
+	\end{flalign}
+	(15) gives us the fact if $x$ is small enough (close to 1), it is really easy for us to enable the memory management, however this will invokes in too many resize (1 per call of $append$), in other words, this yiels in $O(n)$ runtime of both $append$ and $realloc$. If we choose any $\lambda$ between $1$ and $2$, we can then improve the overall runtime complexity. Before we finish the assertion, we have to prove the following lemma.
+	\\\\ \textbf{Lemma1}: The runtime complexity of resize of a fixed factor $1 < \lambda < 2$ is proportion to the runtime complexity of double resize strategy with $\lambda$.
+	\begin{proof}
+		If we have $n=2^{k}$ elements to insert, suppose we have $\varphi$ calls for a given $\lambda$ resize strategy. Then it is obvious we have $k = log (n)$ calls if we choose double size strategy, we will have $2^{k}=\lambda^{\varphi}$ calls for realloc if we choose $\lambda$ size strategy. This gives us 
+		\begin{flalign}
+			\varphi = - k\ log (\lambda) 
+		\end{flalign}
+		(16) is what we want because $O(\varphi) = O(k)$.
+	\end{proof} 
+	By (12), (13), (15) and lemma1, we have the following fact:
+	\begin{itemize}
+		\item Choose $\lambda$ in interval $(1, 2)$ enables the cache-friendly memory management
+		\item $\varphi = -k\ log (\lambda)$ implies that the realloc number will be portional to $-log(\lambda)$, so we have to "balance out" the $\lambda$ in case the $
+		-log(\lambda)$ not become too large. 
+	\end{itemize}
+	For example, choosing the middle point of $1$ and $2$ gives us the overall calls for $n$ insertion to be $O(\varphi) = O(1.71 k) = O(1.71\ log (n)) = O(log (n))$, a trivial $\lambda = 1$ gives us the overall calls to be $O(n)$ and if $\lambda = 2$, the overall runtime will be $O(log (n)) $ but don't forget there will be $\sum\limits_{i=0}^{k} i = \frac{k(k-1)}{2}=O(log^{2} (n))$ involves for deep copy every time.
+	\begin{thebibliography}{9}
+		\bibitem{fbfolly}
+		\url{https://github.com/facebook/folly/blob/master/folly/docs/FBVector.md}
+	\end{thebibliography}
+	
+	
+\end{document}
