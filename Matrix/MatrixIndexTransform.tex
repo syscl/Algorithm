@@ -1,0 +1,68 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath, mathrsfs}  % The amsmath package is included for \xrightarrow
+\usepackage{amssymb} % for mathematic symbol 
+\usepackage{amsthm} % for the proof square at the end when we finish the proof
+\usepackage{listings}
+\usepackage[colorlinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{color} % for text color % \color{blue}
+\usepackage{booktabs} % for excel
+\usepackage{array} % for excel
+\usepackage{multirow} % for excel
+\usepackage{enumitem}
+\usepackage{float} % solve pictures and sheets not follow by words! This issue is just the same as the fucking macOS/iOS' Pages
+% citation style
+\bibliographystyle{ieeetr}
+
+\titleformat*{\section}{\normalsize\bfseries}  % titile format
+
+\usepackage{graphicx} % insert pics
+
+\hypersetup{allcolors=black} % cite and refer color 
+
+\begin{document}
+	\title{%
+		\textbf{Analysis of Matrix Index Transformation}} 
+		\author{
+			Author: syscl/Yating Zhou\\ 
+		}
+	\maketitle
+		We can represent a 2-dimensional index to 1-dimensional index and vice versa. When using a set to mark some elements in a given matrix, it is convenient to covert the index from 2-dimensional to 1-dimensional, because the conversion is unique so that the key of the hash will be unique as well. The conversion is known as
+		\begin{flalign}
+			f: R^2 \to R^1  \label{convert_func}
+		\end{flalign}      
+		By (\ref{convert_func}), an element in $(r,c)$ in a $m\times n$ matrix can be converted to  
+		\begin{flalign}
+			f(r,c)=nr + c \label{def_converted_func} 
+		\end{flalign}
+		By (\ref{def_converted_func}),
+		\begin{flalign}
+			\frac{\partial f}{\partial r} = n > 0 \label{partial_r}\\
+			\frac{\partial f}{\partial c} = 1 > 0 \label{partial_c}
+		\end{flalign}
+		By (\ref{partial_r}) and (\ref{partial_c}), for fixed $r$ or $c$, $f$ is increasing function, so the reverse function exist, this implies that we can covert the 1-dimensional index (says $i$) back to the 2-dimensional index by reverse function as following
+		\begin{flalign}
+			x(i) = i / n \label{get_x}\\
+			y(i) = i \% n\label{get_y}
+		\end{flalign}
+		With the discussion above, we can now generalize the transformation a bit. The reason why we can transform the index is because 
+			
+		\begin{enumerate}[label=(\Roman*)]
+			\item For each of the transformation, the mapping is unique so that the reverse image exists
+			\item And the boundary $m$ and $n$ play a key role to ensure the mapping is unique
+		\end{enumerate}
+		Here is the generalized form of the mapping: Let real function $f_s$ defined on the set $X=\{(x_1, x_2)|x_1\in \mathbb{N}, 0\leq x_2\leq n\}$ where $n\in \mathbb{N}$ and $s$ is a real number greater than $n$, $f_s(x_1, x_2) = sx_1+x_2$. \\\\
+		\textbf{Theorem 1}: For any $(x_1, x_2), (x_1^{'}, x_2^{'})\in X$, if $f_s(x_1, x_2)=f_s(x_1^{'}, x_2^{'})$, then $x_1=x_1^{'}$ and $x_2=x_2^{'}$.
+		\begin{proof}
+			Suppose $x_i \neq x_i^{'}$ holds for all $i$. Then we have 
+			\begin{flalign}
+				s|x_1-x_1^{'}|=|x_2-x_2^{'}|\leq n < s \label{get_contradiction}
+			\end{flalign}
+			By (\ref{get_contradiction}), we have
+			\begin{flalign}
+				|x_1-x_1^{'}| < 1 \label{prove_contradiction}
+			\end{flalign}
+			since $x_1, x_1^{'}\in \mathbb{N}$ and $x_1\neq x_1^{'}$, (\ref{prove_contradiction}) says precisely $x_1=x_1^{'}$, which is contradict to our assumption, so $x_1=x_1^{'}$. For fixed $x_1$, $f_s(x_1, x_2)$ is increasing, so $x_2=x_2^{'}$, we thus complete the proof. 
+		\end{proof}
+	
+\end{document}

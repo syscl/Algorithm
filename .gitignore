@@ -1,0 +1,6 @@
+# exclude by-product files
+# exclude tex complied files
+*.log
+*.out
+*.synctex.gz
+*.aux
