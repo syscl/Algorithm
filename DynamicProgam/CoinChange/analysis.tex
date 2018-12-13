@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Title: SOP LaTeX Template
+%% Title: Doc LaTeX Template
 %% Author: Yating Zhou 
 %% Created: 2018-12-10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,7 +56,7 @@ Let the $d_1, \cdots, d_k$ be the denominations, $n$ be the amount of money, $c_
 	c_p = &\min_{1\leq i \leq k} (1 + c_{p - d_i}) \label{recurrence_eq}
 \end{flalign}
 then $c_p$ is optimal solution to $p$.\\\\
-Before we completes the proof, We have to prove the following lemmas.\\\\
+Before we complete the proof, We have to prove the following lemma.\\\\
 \textbf{Lemma 1} Let $X=\{x_1, \cdots, x_k\}$ be an optimal solution where $x_i$ is the number of $d_i$ being used. If $P\subseteq X$ and $\alpha=\sum\limits_{x_i\in P} d_i x_i$, then $P$ is an optimal solution to $\alpha$.
 	\begin{proof}
 		If $P$ is not an optimal solution to $P$, there there must exist a set $Q\subseteq X$ such that $\alpha = \sum\limits_{x_i\in Q} d_i x_i$ and $\sum\limits_{x\in Q} x < \sum\limits_{x\in P} x$. If that is the case,
