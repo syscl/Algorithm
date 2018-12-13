@@ -1,0 +1,73 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Title: SOP LaTeX Template
+%% Author: Yating Zhou 
+%% Created: 2018-12-10
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[letterpaper]{article}
+\usepackage[letterpaper,margin=1.75in,noheadfoot]{geometry}
+\usepackage{fontspec, color, enumerate, sectsty}
+\usepackage[normalem]{ulem}
+
+\usepackage{amsmath, mathrsfs}  % The amsmath package is included for \xrightarrow
+\usepackage{amssymb} % for mathematic symbol 
+\usepackage{amsthm} % for the proof square at the end when we finish the proof
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{color} % for text color % \color{blue}
+\usepackage{booktabs} % for excel
+\usepackage{array} % for excel
+\usepackage{multirow} % for excel
+\usepackage{float} % solve pictures and sheets not follow by words! This issue is just the same as the fucking macOS/iOS' Pages
+% citation style
+\bibliographystyle{ieeetr}
+\usepackage{graphicx} % insert pics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      YOUR INFORMATION
+%
+%      PLEASE EDIT THE FOLLOWING LINES ACCORDINGLY!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\soptitle}{Dynamic Programming to Coin Change Problem} 
+\newcommand{\yourname}{syscl}
+
+%% FONTS SETUP
+\defaultfontfeatures{Mapping=tex-text}
+\setromanfont[Ligatures={Common}]{Tinos-Regular}
+\setmonofont[Scale=0.8]{Tinos-Regular}
+\setsansfont[Scale=0.9]{Tinos-Regular}
+\newcommand{\amper}{{\fontspec[Scale=.95]{Tinos-Regular}\selectfont\itshape\&~{}}}
+\usepackage[bookmarks, colorlinks, breaklinks,
+pdftitle={\yourname - \soptitle},pdfauthor={\yourname}, unicode]{hyperref}
+\hypersetup{linkcolor=magneta,citecolor=magenta,filecolor=magenta,urlcolor=[named]{WildStrawberry}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      Title and Author Name
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{center}{\huge \scshape \soptitle}\end{center}
+\begin{center}\vspace{0.2em} {\Large \yourname\\}
+  \end{center}
+
+\noindent
+Let the $d_1, \cdots, d_k$ be the denominations, $n$ be the amount of money, $c_p$ be the minimum number of coins of current denomination system needed to make change for $p$. Let
+\begin{flalign}
+	&c_0 = 0\\
+	c_p = &\min_{1\leq i \leq k} (1 + c_{p - d_i}) \label{recurrence_eq}
+\end{flalign}
+then $c_p$ is optimal solution to $p$.\\\\
+Before we completes the proof, We have to prove the following lemmas.\\\\
+\textbf{Lemma 1} Let $X=\{x_1, \cdots, x_k\}$ be an optimal solution where $x_i$ is the number of $d_i$ being used. If $P\subseteq X$ and $\alpha=\sum\limits_{x_i\in P} d_i x_i$, then $P$ is an optimal solution to $\alpha$.
+	\begin{proof}
+		If $P$ is not an optimal solution to $P$, there there must exist a set $Q\subseteq X$ such that $\alpha = \sum\limits_{x_i\in Q} d_i x_i$ and $\sum\limits_{x\in Q} x < \sum\limits_{x\in P} x$. If that is the case,
+		\begin{flalign}
+			\sum\limits_{x \in Q\cup (X-P)} x < \sum\limits_{x\in X} x \label{key}
+		\end{flalign} 
+		and this is contradict to $X$ is an optimal solution since $Q\cup (X-P)$ is a valid solution.
+	\end{proof}
+	\textbf{Corollary} $X-P$ is optimal solution to  $n-\alpha$.\\\\
+	We now go to prove the recurrence relation $c_p$ is optimal solution. 
+	\begin{proof}
+		For the base case where $c_0=0$ is trivially correct. By \textbf{Lemma 1}, the optimal solution to the coin changing problem is composed of optimal solutions to smaller subproblems, which completes the proof.
+	\end{proof}
+\end{document}
